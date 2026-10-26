@@ -28,11 +28,17 @@ jobs:
           pip install playwright pandas openpyxl
           playwright install --with-deps chrome
 
+      - name: Test connection to the site
+        run: |
+          curl -sS -o /dev/null -m 30 -A "Mozilla/5.0" \
+            -w "HTTP %{http_code}, %{time_total}s, ip %{remote_ip}\n" \
+            "https://www.opl.co.il/" || echo "curl failed"
+
       - name: Check for new cars
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python opl_monitor3.py
+        run: python opl_monitor.py
 
       - name: Save state
         run: |
